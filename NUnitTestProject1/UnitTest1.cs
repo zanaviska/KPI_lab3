@@ -29,47 +29,15 @@ namespace NUnitTestProject1
             Assert.IsNotNull(new MultipleBinaryFlag(17179868704));
             //with second parameter
             Assert.IsNotNull(new MultipleBinaryFlag(17179868704, true));
+            //test another all 3 branch of constructor flow
+            Assert.IsNotNull(new MultipleBinaryFlag(17179868704, true));
             Assert.IsNotNull(new MultipleBinaryFlag(17179868704, false));
+            Assert.IsNotNull(new MultipleBinaryFlag(50, true));
+            Assert.IsNotNull(new MultipleBinaryFlag(50, false));
+            Assert.IsNotNull(new MultipleBinaryFlag(10, true));
+            Assert.IsNotNull(new MultipleBinaryFlag(10, false));
         }
         
-        [Test]
-        public void GetTypeTest()
-        {
-            MultipleBinaryFlag flag1 = new MultipleBinaryFlag(10);
-            MultipleBinaryFlag flag2 = new MultipleBinaryFlag(10, true);
-            MultipleBinaryFlag flag3 = new MultipleBinaryFlag(10, false);
-
-            Assert.AreEqual(flag1.GetType().ToString(), "IIG.BinaryFlag.MultipleBinaryFlag");
-            Assert.AreEqual(flag2.GetType().ToString(), "IIG.BinaryFlag.MultipleBinaryFlag");
-            Assert.AreEqual(flag3.GetType().ToString(), "IIG.BinaryFlag.MultipleBinaryFlag");
-        }
-
-        [Test]
-        public void TestEquality()
-        {
-            MultipleBinaryFlag[] flag = new MultipleBinaryFlag[6];
-            
-            flag[0] = new MultipleBinaryFlag(10);
-            flag[1] = new MultipleBinaryFlag(10, true);
-            flag[2] = new MultipleBinaryFlag(10, false);
-            flag[3] = new MultipleBinaryFlag(11);
-            flag[4] = new MultipleBinaryFlag(11, true);
-            flag[5] = new MultipleBinaryFlag(11, false);
-            
-
-            //equalty of the same objects(not overrided .Equal())
-            for (int i = 0; i < 6; i++)
-                for (int j = i + 1; j < 6; j++)
-                    Assert.AreNotEqual(flag[i], flag[j]);
-
-            //equality of flags
-            for (int i = 0; i < 6; i++)
-                for (int j = i + 1; j < 6; j++)
-                    if ((j % 3 == 2 && i%3 != 2) || (i%3 == 2 && j%3 != 2))
-                        Assert.AreNotEqual(flag[i].GetFlag(), flag[j].GetFlag());
-                    else
-                        Assert.AreEqual(flag[i].GetFlag(), flag[j].GetFlag());
-        }
         [Test]
         public void TestFlagChanging()
         {
@@ -80,8 +48,17 @@ namespace NUnitTestProject1
             Assert.IsFalse(mbf.GetFlag());
 
             for (ulong i = 0; i < 10; i++)
-                mbf.ResetFlag(i);
+                mbf.SetFlag(i);
             Assert.IsTrue(mbf.GetFlag());
+
+
+            // Test that flag state if any position is false (through SetFlag method)
+            mbf.SetFlag(3);
+            Assert.IsTrue(mbf.GetFlag());
+
+            for (ulong i = 0; i < 10; i++)
+                mbf.ResetFlag(i);
+            Assert.IsFalse(mbf.GetFlag());
         }
         [Test]
         public void TestFlagChangeError()
@@ -112,13 +89,6 @@ namespace NUnitTestProject1
             for (ulong i = 0; i < 4; i++)
                 mbf.ResetFlag(i);
             Assert.AreEqual(mbf.ToString(), "FFFF");
-        }
-        [Test]
-        public void TestDispose()
-        {
-            MultipleBinaryFlag mbf = new MultipleBinaryFlag(8);
-            mbf.Dispose();
-            Assert.IsNotNull(mbf);
         }
     }
 }
